@@ -23,6 +23,7 @@
         - patch
         - git
         - screen
+        - squid
       state: present
 
   - name: Install EPEL for VMware
@@ -314,6 +315,7 @@
       - nfs-server
       - nfs-lock
       - nfs-idmap
+      - squid
 
   - name: Starting DHCP/PXE services
     service:
