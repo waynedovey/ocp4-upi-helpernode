@@ -240,7 +240,6 @@
       with_items: "{{ workers }}"
       notify:
         - restart tftp
-    when: not staticips
 
     - name: Set the storage specific tftp files
       template:

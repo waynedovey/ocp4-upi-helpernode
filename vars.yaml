@@ -7,8 +7,8 @@ helper:
 dns:
   domain: "lab.gsslab.pek2.redhat.com"
   clusterid: "ocp4"
-  forwarder1: "192.168.0.1"
-  forwarder2: "192.168.0.1"
+  forwarder1: "8.8.8.8"
+  forwarder2: "4.4.4.4"
 dhcp:
   router: "192.168.0.1"
   bcast: "192.168.0.255"
