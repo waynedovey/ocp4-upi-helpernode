@@ -8,6 +8,10 @@
   - import_tasks: ../handlers/main.yml
   tasks:
 
+  - name: Set timezone to UTC
+    timezone:
+      name: UTC
+
   - name: Install needed packages
     yum:
       name:
