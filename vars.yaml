@@ -14,7 +14,7 @@ dhcp:
   bcast: "192.168.0.255"
   netmask: "255.255.255.0"
   poolstart: "192.168.0.10"
-  poolend: "192.168.0.30"
+  poolend: "192.168.0.60"
   ipid: "192.168.0.0"
   netmaskid: "255.255.255.0"
 bootstrap:
