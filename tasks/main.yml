@@ -28,6 +28,7 @@
         - git
         - screen
         - squid
+        - chrony
       state: present
 
   - name: Install EPEL for VMware
@@ -123,6 +124,13 @@
       dest: /etc/httpd/conf/httpd.conf
     notify:
       - restart httpd
+
+  - name: Copy chrony conf file
+    template:
+      src: ../templates/chrony.conf.j2
+      dest: /etc/chrony.conf
+    notify:
+      - restart chronyd
 
   - name: Create apache directories for installing
     file:

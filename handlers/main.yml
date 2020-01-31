@@ -15,6 +15,11 @@
     name: httpd
     state: restarted
 
+- name: restart chronyd
+  service:
+    name: chronyd
+    state: restarted
+
 - name: restart dhcpd
   service:
     name: dhcpd
