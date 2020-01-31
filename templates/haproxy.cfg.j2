@@ -107,6 +107,10 @@ backend ingress-http
 {% for w in workers %}
     server {{ w.name }}-http-router{{ loop.index0 }} {{ w.ipaddr }}:80 check
 {% endfor %}
+# Route Storage Nodes *TEMP*
+{% for s in storage %}
+    server {{ s.name }}-http-router{{ loop.index0 }} {{ s.ipaddr }}:80 check
+{% endfor %}
    
 frontend ingress-https
     bind *:443
@@ -119,6 +123,10 @@ backend ingress-https
     mode tcp
 {% for w in workers %}
     server {{ w.name }}-https-router{{ loop.index0 }} {{ w.ipaddr }}:443 check
+{% endfor %}
+# Route Storage Nodes *TEMP*
+{% for s in storage %}
+    server {{ s.name }}-https-router{{ loop.index0 }} {{ s.ipaddr }}:443 check
 {% endfor %}
 
 #---------------------------------------------------------------------
