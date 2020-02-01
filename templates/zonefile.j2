@@ -22,6 +22,9 @@ api-int		IN	A	{{ helper.ipaddr }}
 ; The wildcard also points to the load balancer
 *.apps		IN	A	{{ helper.ipaddr }}
 ;
+; NTP Server
+clock           IN      A       {{ helper.ipaddr }}
+;
 ; Create entry for the bootstrap host
 {{ bootstrap.name }}	IN	A	{{ bootstrap.ipaddr }}
 ;
