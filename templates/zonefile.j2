@@ -25,6 +25,8 @@ api-int		IN	A	{{ helper.ipaddr }}
 ; NTP Server
 clock           IN      A       {{ helper.ipaddr }}
 ;
+; Bation Node
+bastion           IN      A       {{ helper.ipaddr }}
 ; Create entry for the bootstrap host
 {{ bootstrap.name }}	IN	A	{{ bootstrap.ipaddr }}
 ;
