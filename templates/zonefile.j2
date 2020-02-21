@@ -28,6 +28,8 @@ clock           IN      A       {{ helper.ipaddr }}
 ; Create entry for the bootstrap host
 {{ bootstrap.name }}	IN	A	{{ bootstrap.ipaddr }}
 ;
+; Create entry for the registry host
+{{ registry.name }}	IN	A	{{ registry.ipaddr }}
 ; Create entries for the master hosts
 {% for m in masters %}
 {{ m.name }}		IN	A	{{ m.ipaddr }}

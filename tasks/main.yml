@@ -185,6 +185,7 @@
       - 20048/tcp
       - 50825/tcp
       - 53248/tcp
+      - 3128/tcp
 
   - name: Best effort SELinux repair - DNS
     shell: "restorecon -vR /var/named || true"
@@ -431,7 +432,7 @@
 
   - name: Downloading filetranspiler source
     git:
-      repo: https://github.com/ashcrow/filetranspiler
+      repo: https://github.com/waynedovey/filetranspiler
       dest: /usr/local/src/filetranspiler
 
   - name: Building filetranspiler

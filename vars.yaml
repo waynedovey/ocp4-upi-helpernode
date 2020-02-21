@@ -3,12 +3,14 @@ disk: vda
 helper:
   name: "helper"
   ipaddr: "192.168.0.2"
-  networkifacename: "ens192"
+  networkifacename: "ens224"
 dns:
-  domain: "lab.gsslab.pek2.redhat.com"
+  domain: "gsslab.brq.redhat.com"
   clusterid: "ocp4"
-  forwarder1: "8.8.8.8"
-  forwarder2: "4.4.4.4"
+#  forwarder1: "8.8.8.8"
+#  forwarder2: "4.4.4.4"
+  forwarder1: "10.5.30.45"
+  forwarder2: "10.5.30.46"
 dhcp:
   router: "192.168.0.2"
   bcast: "192.168.0.255"
@@ -17,6 +19,9 @@ dhcp:
   poolend: "192.168.0.60"
   ipid: "192.168.0.0"
   netmaskid: "255.255.255.0"
+registry:
+  name: "quay"
+  ipaddr: "192.168.0.100"
 bootstrap:
   name: "bootstrap"
   ipaddr: "192.168.0.20"
