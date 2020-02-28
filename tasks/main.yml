@@ -50,13 +50,13 @@
       dest: /usr/local/bin/govc_linux_amd64.gz
       mode: '0640'
 
-  - name: Install GOVC VMware 
+  - name: Install GOVC VMware
     command: "gunzip /usr/local/bin/govc_linux_amd64.gz"
 
-  - name: Install GOVC VMware 
+  - name: Install GOVC VMware
     command: "mv /usr/local/bin/govc_linux_amd64 /usr/local/bin/govc"
 
-  - name: Install GOVC VMware 
+  - name: Install GOVC VMware
     command: "chmod +x /usr/local/bin/govc"
 
   - name: Install packages for DHCP/PXE install
@@ -96,21 +96,21 @@
   - name: Setting serial number as a fact
     set_fact:
       serialnumber: "{{ dymanicserialnumber.stdout }}"
-  
+
   - name: Write out "{{ dns.domain }}" zone file
     template:
       src: ../templates/zonefile.j2
       dest: /var/named/zonefile.db
     notify:
       - restart bind
-  
+
   - name: Write out reverse zone file
     template:
       src: ../templates/reverse.j2
       dest: /var/named/reverse.db
     notify:
       - restart bind
-  
+
   - name: Write out haproxy config file
     template:
       src: ../templates/haproxy.cfg.j2
@@ -403,25 +403,15 @@
       dest: /usr/local/src/registry-pvc.yaml
       mode: '0555'
 
-  - name: Downloading OCP4 client
-    get_url:
-      url: "{{ ocp_client }}"
-      dest: /usr/local/src/openshift-client-linux.tar.gz
-
-  - name: Downloading OCP4 Installer
-    get_url:
-      url: "{{ ocp_installer }}"
-      dest: /usr/local/src/openshift-install-linux.tar.gz
-
   - name: Unarchiving OCP4 client
     unarchive:
-      src: /usr/local/src/openshift-client-linux.tar.gz
+      src: "{{ ocp_client }}"
       dest: /usr/local/bin
       remote_src: yes
 
   - name: Unarchiving OCP4 Installer
     unarchive:
-      src: /usr/local/src/openshift-install-linux.tar.gz
+      src: "{{ ocp_installer }}"
       dest: /usr/local/bin
       remote_src: yes
 
@@ -456,7 +446,7 @@
     shell: 'nmcli con mod "{{ dsname }}" ipv4.dns 127.0.0.1'
 
   - name: Setting DNS search path on network interface "{{ dsname }}" to "{{ dns.clusterid }}.{{ dns.domain }}"
-    shell: 'nmcli con mod  "{{ dsname }}" ipv4.dns-search {{ dns.clusterid }}.{{ dns.domain }}'
+    shell: 'nmcli con mod "{{ dsname }}" ipv4.dns-search {{ dns.clusterid }}.{{ dns.domain }}'
 
   - name: Restarting NetworkManager
     service:
@@ -464,7 +454,7 @@
       state: restarted
     with_items:
       - NetworkManager
- 
+
   - name:  Information about this install
     debug:
       msg:

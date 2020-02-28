@@ -52,6 +52,26 @@ Once you edited your `vars.yaml` file; run the playbook
 ansible-playbook -e @vars.yaml tasks/main.yml
 ```
 
+The playbook does the following tasks:
+
+- Sets timezone to UTC
+- Installs pre-requisites
+- Sets zone serial number
+- Writes out DNS domain zone file
+- Writes out reverse zone file
+- Writes out haproxy config file
+- Configures Apache
+- Configures Chronyd
+- Opens up firewall ports
+- Configures NFS
+- Creates TFTP and configures it
+- Generates PxE config files
+- Starts certain services
+- Configures OpenShift PVCs
+- Builds & installs filetranspiler
+- Sets up DNS server IP and search path on the network interface
+- Provides information about the installation
+
 ## Helper Script
 
 You can run this script and it's options to display helpful information about the install.
@@ -63,5 +83,3 @@ You can run this script and it's options to display helpful information about th
 ## Install OpenShift 4 UPI
 
 Now you're ready to follow the [OCP4 UPI install doc](https://docs.openshift.com/container-platform/4.2/installing/installing_bare_metal/installing-bare-metal.html#ssh-agent-using_installing-bare-metal)
-
-
