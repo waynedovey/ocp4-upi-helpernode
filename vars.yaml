@@ -3,14 +3,12 @@ disk: vda
 helper:
   name: "helper"
   ipaddr: "192.168.0.2"
-  networkifacename: "ens224"
+  networkifacename: "ens224" # interface with default gateway on helper node
 dns:
-  domain: "gsslab.brq.redhat.com"
+  domain: "gsslab.brq.redhat.com" # DNS search domain
   clusterid: "ocp4"
-#  forwarder1: "8.8.8.8"
-#  forwarder2: "4.4.4.4"
-  forwarder1: "10.5.30.45"
-  forwarder2: "10.5.30.46"
+  forwarder1: "10.5.30.45" # DNS server 1
+  forwarder2: "10.5.30.46" # DNS server 2
 dhcp:
   router: "192.168.0.2"
   bcast: "192.168.0.255"
