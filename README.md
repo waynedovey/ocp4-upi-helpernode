@@ -1,85 +1,38 @@
-# OCP4 UPI Helper Node Playbook
+Role Name
+=========
 
-> You can visit the [quickstart](docs/quickstart.md) to get right on it and start
+A brief description of the role goes here.
 
-This assumes the following
+Requirements
+------------
 
-1. You're on a Network that has access to the internet
-2. The network you're on does NOT have DHCP
-3. The helpernode will be your LB/DHCP/PXE/DNS and HTTPD server
-4. You still have to do the OpenShift Install steps by hand (this just sets up the node to help you)
-5. I used CentOS 7
-6. You will be running the `openshift-install` command from this helpernode
+Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
 
-![helpernode](docs/images/hn.jpg)
+Role Variables
+--------------
 
+A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
 
-It's important to note that you can delegate DNS to this helpernode if you don't want to use it as your main DNS server. You will have to delegate `$CLUSTERID.$DOMAIN` to this helper node.
+Dependencies
+------------
 
-For example; if you want a `$CLUSTERID` of **ocp4**, and a `$DOMAIN` of **example.com**. Then you will delegate `ocp4.example.com` to this helpernode.
+A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
 
-## Prereqs
+Example Playbook
+----------------
 
-> **NOTE** If using RHEL 7, you will need to enable the `rhel-7-server-rpms` and the `rhel-7-server-extras-rpms` repos. [EPEL](https://fedoraproject.org/wiki/EPEL) is also recommended for RHEL 7.
+Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
-Install a CentOS 7 server with this recommended setup:
+    - hosts: servers
+      roles:
+         - { role: username.rolename, x: 42 }
 
-* 4 vCPUs
-* 4 GB of RAM
-* 30GB HD
-* Static IP
+License
+-------
 
-Then prepare for the install
+BSD
 
-```
-yum -y install ansible git
-git clone https://github.com/christianh814/ocp4-upi-helpernode
-cd ocp4-upi-helpernode
-```
+Author Information
+------------------
 
-## Setup your Environment Vars
-
-Inside that dir there is a [vars.yaml](docs/examples/vars.yaml) file ... **__modify it__** to match your network (the example one assumes a `/24`)
-
-> **NOTE** See the `vars.yaml` [documentaion page](docs/vars-doc.md) for more info about what it does.
-
-
-## Run the playbook
-
-Once you edited your `vars.yaml` file; run the playbook
-
-```
-ansible-playbook -e @vars.yaml tasks/main.yml
-```
-
-The playbook does the following tasks:
-
-- Sets timezone to UTC
-- Installs pre-requisites
-- Sets zone serial number
-- Writes out DNS domain zone file
-- Writes out reverse zone file
-- Writes out haproxy config file
-- Configures Apache
-- Configures Chronyd
-- Opens up firewall ports
-- Configures NFS
-- Creates TFTP and configures it
-- Generates PxE config files
-- Starts certain services
-- Configures OpenShift PVCs
-- Builds & installs filetranspiler
-- Sets up DNS server IP and search path on the network interface
-- Provides information about the installation
-
-## Helper Script
-
-You can run this script and it's options to display helpful information about the install.
-
-```
-/usr/local/bin/helpernodecheck
-```
-
-## Install OpenShift 4 UPI
-
-Now you're ready to follow the [OCP4 UPI install doc](https://docs.openshift.com/container-platform/4.2/installing/installing_bare_metal/installing-bare-metal.html#ssh-agent-using_installing-bare-metal)
+An optional section for the role authors to include contact information, or a website (HTML is not allowed).

@@ -80,7 +80,7 @@ backend openshift-api-server
 {% for m in masters %}
     server {{ m.name }} {{ m.ipaddr }}:6443 check
 {% endfor %}
-    
+
 frontend machine-config-server
     bind *:22623
     default_backend machine-config-server
@@ -94,7 +94,7 @@ backend machine-config-server
 {% for m in masters %}
     server {{ m.name }} {{ m.ipaddr }}:22623 check
 {% endfor %}
-  
+
 frontend ingress-http
     bind *:80
     default_backend ingress-http
@@ -111,7 +111,7 @@ backend ingress-http
 {% for s in storage %}
     server {{ s.name }}-http-router{{ loop.index0 }} {{ s.ipaddr }}:80 check
 {% endfor %}
-   
+
 frontend ingress-https
     bind *:443
     default_backend ingress-https
