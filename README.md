@@ -1,38 +1,129 @@
-Role Name
+OCP4-UPI-HELPERNODE
 =========
 
-A brief description of the role goes here.
+This role deploys something we call **helpernode**, which acts as a multi-purpose/multi-service node that is helpful when you are installing Red Hat OpenShift v4.X.
+
+The roles performs the following actions:
+
+* Sets timezone to UTC
+* Installs pre-requisites
+* Sets zone serial number
+* Writes out DNS domain zone file
+* Writes out reverse zone file
+* Writes out haproxy config file
+* Configures Apache
+* Configures Chronyd
+* Opens up firewall ports
+* Configures NFS
+* Creates TFTP and configures it
+* Generates PxE config files
+* Starts certain services
+* Configures OpenShift PVCs
+* Builds & installs filetranspiler
+* Sets up DNS server IP and search path on the network interface
+* Provides information about the installation
+
+> You can visit the [quickstart](docs/quickstart.md) to get right on it and start
+
+This assumes the following:
+
+1. You're on a Network that has access to the internet
+2. The network you're on does NOT have DHCP
+3. The helpernode will be your LB/DHCP/PXE/DNS and HTTPD server
+4. You still have to do the OpenShift Install steps by hand (this just sets up the node to help you)
+5. I used CentOS 7
+6. You will be running the `openshift-install` command from this helpernode
+
+![helpernode](docs/images/hn.jpg)
+
+It's important to note that you can delegate DNS to this helpernode if you don't want to use it as your main DNS server. You will have to delegate `$CLUSTERID.$DOMAIN` to this helper node.
+
+For example; if you want a `$CLUSTERID` of **ocp4**, and a `$DOMAIN` of **example.com**. Then you will delegate `ocp4.example.com` to this helpernode.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+> **NOTE** If using RHEL 7, you will need to enable the `rhel-7-server-rpms` and the `rhel-7-server-extras-rpms` repos. [EPEL](https://fedoraproject.org/wiki/EPEL) is also recommended for RHEL 7.
+
+Install a CentOS 7 server with this recommended setup:
+
+* 4 vCPUs
+* 4 GB of RAM
+* 30GB HD
+* Static IP
+
+Then prepare for the install
+
+```bash
+yum -y install ansible git
+git clone https://github.com/waynedovey/ocp4-upi-helpernode
+cd ocp4-upi-helpernode
+```
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+Variables that are in `defaults/main.yml`:
+
+* `staticips`
+* `force_ocp_download`
+* `ocp_bios`
+* `ocp_initramfs`
+* `ocp_install_kernel`
+* `ocp_client`
+* `ocp_installer`
+
+Inside the examples dir there is a [vars.yaml](docs/examples/vars.yaml) file ... **__modify it__** to match your network (the example one assumes a `/24`)
+
+> **NOTE** See the `vars.yaml` [documentaion page](docs/vars-doc.md) for more info about what it does.
+
+Run the playbook
+----------------
+
+Once you edited your `vars-helpernode.yaml` file; run the playbook - e.g.:
+
+```bash
+ansible-playbook -e @vars-helpernode.yaml playbook.yml
+```
+
+Helper Script
+-------------
+
+You can run this script and it's options to display helpful information about the install.
+
+```bash
+/usr/local/bin/helpernodecheck
+```
+
+Install OpenShift 4 UPI
+-----------------------
+
+Now you're ready to follow the [OCP4 UPI install doc](https://docs.openshift.com/container-platform/4.2/installing/installing_bare_metal/installing-bare-metal.html#ssh-agent-using_installing-bare-metal)
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+Nothing at the moment.
+
+_A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles._
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+An example of how to use the role:
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+```yaml
+- hosts: localhost
+  roles:
+      - { role: ocp4-upi-helpernode, key: value }
+```
 
 License
 -------
 
-BSD
+MIT
 
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Red Hat, Inc.
