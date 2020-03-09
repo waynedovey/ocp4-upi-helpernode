@@ -8,7 +8,7 @@ This page gives you an explanation of the variables found in the [vars.yaml](exa
 
 In the first section, you'll see that it's asking for a disk
 
-```
+```yaml
 disk: vda
 ```
 
@@ -18,12 +18,11 @@ This needs to be set to the disk where you are installing RHCOS on the masters/w
 
 You can, however edit the `/var/lib/tftpboot/pxelinux.cfg/default` file by hand after the install.
 
-
 ## Helper Section
 
 This section sets the variables for the helpernode
 
-```
+```yaml
 helper:
   name: "helper"
   ipaddr: "192.168.7.77"
@@ -38,12 +37,11 @@ This is how it breaks down
 
 **NOTE**: The `helper.networkifacename` is the ACTUAL name of the interface, NOT the NetworkManager name (you should _NEVER_ need to set it to something like `System eth0`. Set it to what you see in `ip addr`)
 
-
 ## DNS Section
 
 This section sets up your DNS server.
 
-```
+```yaml
 dns:
   domain: "example.com"
   clusterid: "ocp4"
@@ -68,7 +66,7 @@ The DNS server will be set up using `dns.clusterid` + `dns.domain` as the domain
 
 This section sets up the DHCP server.
 
-```
+```yaml
 dhcp:
   router: "192.168.7.1"
   bcast: "192.168.7.255"
@@ -95,7 +93,7 @@ These variables are used to set up the [dhcp config file](../templates/dhcpd.con
 
 This section defines the bootstrap node configuration
 
-```
+```yaml
 bootstrap:
   name: "bootstrap"
   ipaddr: "192.168.7.20"
@@ -108,12 +106,11 @@ The options are:
 * `bootstrap.ipaddr` - The IP address that you want set (this modifies the [dhcp config file](../templates/dhcpd.conf.j2#L17), the [dns zonefile](../templates/zonefile.j2#L26), and the [reverse dns zonefile](../templates/reverse.j2#L15))
 * `bootstrap.macaddr` - The mac address for [dhcp reservation](../templates/dhcpd.conf.j2#L17). This option is not needed if you're doing static ips.
 
-
 ## Master Node section
 
 Similar to the bootstrap section; this sets up master node configuration. Please note that this is an array.
 
-```
+```yaml
 masters:
   - name: "master0"
     ipaddr: "192.168.7.21"
@@ -130,14 +127,13 @@ masters:
 * `masters.ipaddr` - The IP address (x of 3) that you want set (this modifies the [dhcp config file](../templates/dhcpd.conf.j2#L19), the [dns zonefile](../templates/zonefile.j2#L29), and the [reverse dns zonefile](../templates/reverse.j2#L11))
 * `masters.macaddr` - The mac address for [dhcp reservation](../templates/dhcpd.conf.j2#L19). This option is not needed if you're doing static ips.
 
-
 **NOTE**: 3 Masters are MANDATORY for installation of OpenShift 4
 
 ## Worker Node section
 
 Similar to the master section; this sets up worker node configuration. Please note that this is an array.
 
-```
+```yaml
 workers:
   - name: "worker0"
     ipaddr: "192.168.7.11"
@@ -154,7 +150,6 @@ workers:
 * `workers.ipaddr` - The IP address that you want set (this modifies the [dhcp config file](../templates/dhcpd.conf.j2#L22), the [dns zonefile](../templates/zonefile.j2#L34), and the [reverse dns zonefile](../templates/reverse.j2#L20))
 * `workers.macaddr` - The mac address for [dhcp reservation](../templates/dhcpd.conf.j2#L22). This option is not needed if you're doing static ips.
 
-
 **NOTE**: At LEAST 1 worker is needed for installation of OpenShift 4
 
 ## Extra sections
@@ -165,7 +160,7 @@ Below are example of "extra" features beyond the default built-in vars that you 
 
 In order to use static IPs, you'll need to pass `-e staticips=true` to your `ansible-playbook` command or add the following in your `vars.yaml` file
 
-```
+```yaml
 staticips: true
 ```
 
@@ -177,7 +172,7 @@ This effectively disables DHCP, TFTP, and PXE on the helper. This implicitly mea
 
 You can have the helper deploy the nightly builds of OpenShift 4. Adding the following to your `vars.yaml` files will pull in the coresponding artifacts. Below is an example of pulling the `4.2.0-0.nightly-2019-09-16-114316` nightly
 
-```
+```yaml
 ocp_bios: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/pre-release/latest/rhcos-42.80.20190828.2-metal-bios.raw.gz"
 ocp_initramfs: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/pre-release/latest/rhcos-42.80.20190828.2-installer-initramfs.img"
 ocp_install_kernel: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/pre-release/latest/rhcos-42.80.20190828.2-installer-kernel"
@@ -194,7 +189,7 @@ The [default](../vars/main.yml#L4-L8) is to use the latest stable OpenShift 4 re
 
 > Also, you can point this to ANY apache server...not just the OpenShift 4 mirrors (*cough* *cough* disconnected hint here *cough* *cough*)
 
-# Example Vars file
+## Example Vars file
 
 Below are example `vars.yaml` files.
 
