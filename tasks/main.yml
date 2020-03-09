@@ -4,6 +4,8 @@
 - name: HELPERNODE 1.0 | Set timezone to UTC
   timezone:
     name: UTC
+  tags:
+    - "1"
 
 - name: HELPERNODE 2.0 | Install needed packages
   yum:
@@ -23,12 +25,16 @@
       - squid
       - chrony
     state: present
+  tags:
+    - "2"
 
 - name: HELPERNODE 2.1 | Install EPEL for VMware
   yum:
     name:
       - https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
     state: present
+  tags:
+    - "2"
 
 - name: HELPERNODE 2.2 | Install Packages for VMware
   yum:
@@ -36,21 +42,31 @@
       - python-requests
       - python-pyvmomi
     state: present
+  tags:
+    - "2"
 
 - name: HELPERNODE 2.3 | Install GOVC VMware
   get_url:
     url: https://github.com/vmware/govmomi/releases/download/v0.22.0/govc_linux_amd64.gz
     dest: /usr/local/bin/govc_linux_amd64.gz
     mode: '0640'
+  tags:
+    - "2"
 
 - name: HELPERNODE 2.4 | Install GOVC VMware
   command: "gunzip /usr/local/bin/govc_linux_amd64.gz"
+  tags:
+    - "2"
 
-- name: HELPERNODE 2.5| Install GOVC VMware
+- name: HELPERNODE 2.5 | Install GOVC VMware
   command: "mv /usr/local/bin/govc_linux_amd64 /usr/local/bin/govc"
+  tags:
+    - "2"
 
 - name: HELPERNODE 2.6 | Install GOVC VMware
   command: "chmod +x /usr/local/bin/govc"
+  tags:
+    - "2"
 
 - name: HELPERNODE 2.7 | Install packages for DHCP/PXE install
   yum:
@@ -60,6 +76,8 @@
       - tftp-server
     state: present
   when: not staticips
+  tags:
+    - "2"
 
 - name: HELPERNODE 3.0 | Write out dhcp file
   template:
@@ -68,6 +86,8 @@
   notify:
     - Restart dhcpd
   when: not staticips
+  tags:
+    - "3"
 
 - name: HELPERNODE 3.1 | Write out named file
   template:
@@ -75,20 +95,28 @@
     dest: /etc/named.conf
   notify:
     - Restart bind
+  tags:
+    - "3"
 
 - name: HELPERNODE 4.0 | Installing DNS Serialnumber generator
   copy:
     src: ../files/set-dns-serial.sh
     dest: /usr/local/bin/set-dns-serial.sh
     mode: '0555'
+  tags:
+    - "4"
 
 - name: HELPERNODE 5.0 | Set zone serial number
   shell: "/usr/local/bin/set-dns-serial.sh"
   register: dymanicserialnumber
+  tags:
+    - "5"
 
 - name: HELPERNODE 5.1 | Setting serial number as a fact
   set_fact:
     serialnumber: "{{ dymanicserialnumber.stdout }}"
+  tags:
+    - "5"
 
 - name: HELPERNODE 6.0 | Write out "{{ dns.domain }}" zone file
   template:
@@ -96,6 +124,8 @@
     dest: /var/named/zonefile.db
   notify:
     - Restart bind
+  tags:
+    - "6"
 
 - name: HELPERNODE 6.1 | Write out reverse zone file
   template:
@@ -103,6 +133,8 @@
     dest: /var/named/reverse.db
   notify:
     - Restart bind
+  tags:
+    - "6"
 
 - name: HELPERNODE 7.0 | Write out haproxy config file
   template:
@@ -110,6 +142,8 @@
     dest: /etc/haproxy/haproxy.cfg
   notify:
     - Restart haproxy
+  tags:
+    - "7"
 
 - name: HELPERNODE 8.0 | Copy httpd conf file
   copy:
@@ -117,6 +151,8 @@
     dest: /etc/httpd/conf/httpd.conf
   notify:
     - Restart httpd
+  tags:
+    - "8"
 
 - name: HELPERNODE 9.0 | Copy chrony conf file
   template:
@@ -124,6 +160,8 @@
     dest: /etc/chrony.conf
   notify:
     - Restart chronyd
+  tags:
+    - "9"
 
 - name: HELPERNODE 10.0 | Create apache directories for installing
   file:
@@ -133,6 +171,8 @@
   with_items:
     - /var/www/html/install
     - /var/www/html/ignition
+  tags:
+    - "10"
 
 - name: HELPERNODE 11.0 | Delete OCP4 files, if requested, to download again
   file:
@@ -145,12 +185,16 @@
     - "/var/lib/tftpboot/rhcos/initramfs.img"
     - "/var/lib/tftpboot/rhcos/kernel"
   when: force_ocp_download
+  tags:
+    - "11"
 
 - name: HELPERNODE 12.0 | Downloading OCP4 installer Bios
   get_url:
     url: "{{ ocp_bios}}"
     dest: /var/www/html/install/bios.raw.gz
     mode: 0555
+  tags:
+    - "12"
 
 - name: HELPERNODE 13.0 | Open up firewall ports
   firewalld:
@@ -159,32 +203,39 @@
     state: enabled
     port: "{{ item }}"
   with_items:
-    - 67/udp
-    - 53/tcp
-    - 53/udp
-    - 443/tcp
-    - 80/tcp
-    - 8080/tcp
-    - 6443/tcp
-    - 6443/udp
-    - 22623/tcp
-    - 22623/udp
-    - 9000/tcp
-    - 69/udp
     - 111/tcp
     - 123/udp
-    - 323/udp
-    - 2049/tcp
+    - 22/tcp
     - 20048/tcp
-    - 50825/tcp
-    - 53248/tcp
+    - 2049/tcp
+    - 22623/tcp
+    - 22623/udp
     - 3128/tcp
+    - 323/udp
+    - 443/tcp
+    - 50825/tcp
+    - 53/tcp
+    - 53/udp
+    - 53248/tcp
+    - 6443/tcp
+    - 6443/udp
+    - 67/udp
+    - 69/udp
+    - 80/tcp
+    - 8080/tcp
+    - 9000/tcp
+  tags:
+    - "13"
 
 - name: HELPERNODE 14.0 | Best effort SELinux repair - DNS
   shell: "restorecon -vR /var/named || true"
+  tags:
+    - "14"
 
 - name: HELPERNODE 14.1 | Best effort SELinux repair - Apache
   shell: "restorecon -vR /var/www/html || true"
+  tags:
+    - "14"
 
 - name: HELPERNODE 15.0 | Create NFS export directory
   file:
@@ -195,6 +246,8 @@
     group: nfsnobody
   notify:
     - Restart nfs
+  tags:
+    - "15"
 
 - name: HELPERNODE 15.1 | Copy NFS export conf file
   copy:
@@ -202,6 +255,8 @@
     dest: /etc/exports
   notify:
     - Restart nfs
+  tags:
+    - "15"
 
 - name: HELPERNODE 16.0 | Create TFTP config
   file:
@@ -211,6 +266,8 @@
   notify:
     - Restart tftp
   when: not staticips
+  tags:
+    - "16"
 
 - name: HELPERNODE 16.1 | Create TFTP RHCOS dir
   file:
@@ -218,6 +275,8 @@
     state: directory
     mode: 0755
   when: not staticips
+  tags:
+    - "16"
 
 - name: HELPERNODE 17.0 | SEBool allow haproxy connect any port
   seboolean:
@@ -226,10 +285,14 @@
     persistent: yes
   notify:
     - Restart haproxy
+  tags:
+    - "17"
 
 - name: HELPERNODE 18.0 | Copy over files needed for TFTP
   shell: "cp -a /usr/share/syslinux/* /var/lib/tftpboot"
   when: not staticips
+  tags:
+    - "18"
 
 - name: HELPERNODE 19.0 | Downloading OCP4 installer initramfs
   get_url:
@@ -237,6 +300,8 @@
     dest: /var/lib/tftpboot/rhcos/initramfs.img
     mode: 0555
   when: not staticips
+  tags:
+    - "19"
 
 - name: HELPERNODE 19.1 | Downloading OCP4 installer kernel
   get_url:
@@ -244,26 +309,32 @@
     dest: /var/lib/tftpboot/rhcos/kernel
     mode: 0555
   when: not staticips
+  tags:
+    - "19"
 
 - name: HELPERNODE 20.0 | Generate pxe config files
   block:
-  - name: Set the default tftp file
+  - name: HELPERNODE 20.1 | Set the default TFTP file
     template:
       src: ../templates/default.j2
       dest: /var/lib/tftpboot/pxelinux.cfg/default
       mode: 0555
     notify:
       - Restart tftp
+    tags:
+      - "20"
 
-  - name: Set the bootstrap specific tftp file
+  - name: HELPERNODE 20.2 | Set the bootstrap specific TFTP file
     template:
       src: ../templates/pxe-bootstrap.j2
       dest: "/var/lib/tftpboot/pxelinux.cfg/01-{{ bootstrap.macaddr | regex_replace (':', '-')}}"
       mode: 0555
     notify:
       - Restart tftp
+    tags:
+      - "20"
 
-  - name: Set the master specific tftp files
+  - name: HELPERNODE 20.3 | Set the master specific TFTP files
     template:
       src: ../templates/pxe-master.j2
       dest: "/var/lib/tftpboot/pxelinux.cfg/01-{{ item.macaddr | regex_replace (':', '-')}}"
@@ -271,8 +342,10 @@
     with_items: "{{ masters }}"
     notify:
       - Restart tftp
+    tags:
+      - "20"
 
-  - name: Set the worker specific tftp files
+  - name: HELPERNODE 20.4 | Set the worker specific TFTP files
     template:
       src: ../templates/pxe-worker.j2
       dest: "/var/lib/tftpboot/pxelinux.cfg/01-{{ item.macaddr | regex_replace (':', '-')}}"
@@ -280,8 +353,10 @@
     with_items: "{{ workers }}"
     notify:
       - Restart tftp
+    tags:
+      - "20"
 
-  - name: Set the storage specific tftp files
+  - name: HELPERNODE 20.5 | Set the storage specific TFTP files
     template:
       src: ../templates/pxe-storage.j2
       dest: "/var/lib/tftpboot/pxelinux.cfg/01-{{ item.macaddr | regex_replace (':', '-')}}"
@@ -289,6 +364,8 @@
     with_items: "{{ storage }}"
     notify:
       - Restart tftp
+    tags:
+      - "20"
   when: not staticips
 
 - name: HELPERNODE 21.0 | Installing TFTP Systemd helper
@@ -297,6 +374,8 @@
     dest: /usr/local/bin/start-tftp.sh
     mode: '0555'
   when: not staticips
+  tags:
+    - "21"
 
 - name: HELPERNODE 21.1 | Installing TFTP Systemd unit file
   copy:
@@ -304,11 +383,15 @@
     dest: /etc/systemd/system/helper-tftp.service
     mode: '0655'
   when: not staticips
+  tags:
+    - "21"
 
 - name: HELPERNODE 22.0 | Systemd daemon reload
   systemd:
     daemon_reload: yes
   when: not staticips
+  tags:
+    - "22"
 
 - name: HELPERNODE 23.0 | Starting services
   service:
@@ -324,6 +407,8 @@
     - nfs-lock
     - nfs-idmap
     - squid
+  tags:
+    - "23"
 
 - name: HELPERNODE 24.0 | Starting DHCP/PXE services
   service:
@@ -335,6 +420,8 @@
     - tftp
     - helper-tftp
   when: not staticips
+  tags:
+    - "24"
 
 - name: HELPERNODE 25.0 | Unmasking Services
   systemd:
@@ -344,11 +431,15 @@
   with_items:
     - tftp
   when: not staticips
+  tags:
+    - "25"
 
 - name: HELPERNODE 26.0 | Set the local resolv.conf file
   template:
     src: ../templates/resolv.conf.j2
     dest: /etc/resolv.conf
+  tags:
+    - "26"
 
 - name: HELPERNODE 27.0 | Copy info script over
   template:
@@ -357,6 +448,8 @@
     owner: root
     group: root
     mode: 0555
+  tags:
+    - "27"
 
 - name: HELPERNODE 28.0 | Copying over nfs-provisioner rbac
   copy:
@@ -365,6 +458,8 @@
     owner: root
     group: root
     mode: 0666
+  tags:
+    - "28"
 
 - name: HELPERNODE 28.1 | Copying over nfs-provisioner deployment
   template:
@@ -373,6 +468,8 @@
     owner: root
     group: root
     mode: 0666
+  tags:
+    - "28"
 
 - name: HELPERNODE 28.2 | Copying over nfs-provisioner storageclass
   copy:
@@ -381,6 +478,8 @@
     owner: root
     group: root
     mode: 0666
+  tags:
+    - "28"
 
 - name: HELPERNODE 28.3 | Copying over nfs-provisioner setup script
   copy:
@@ -389,57 +488,81 @@
     owner: root
     group: root
     mode: 0555
+  tags:
+    - "28"
 
 - name: HELPERNODE 29.0 | Copying over a sample PVC file for NFS
   copy:
     src: ../files/registry-pvc.yaml
     dest: /usr/local/src/registry-pvc.yaml
     mode: '0555'
+  tags:
+    - "29"
 
 - name: HELPERNODE 30.0 | Unarchiving OCP4 client
   unarchive:
     src: "{{ ocp_client }}"
     dest: /usr/local/bin
     remote_src: yes
+  tags:
+    - "30"
 
 - name: HELPERNODE 30.1 | Unarchiving OCP4 Installer
   unarchive:
     src: "{{ ocp_installer }}"
     dest: /usr/local/bin
     remote_src: yes
+  tags:
+    - "30"
 
 - name: HELPERNODE 31.0 | Removing files that are not needed
   file:
     path: /usr/local/bin/README.md
     state: absent
+  tags:
+    - "31"
 
 - name: HELPERNODE 32.0 | Downloading filetranspiler source
   git:
     repo: https://github.com/waynedovey/filetranspiler
     dest: /usr/local/src/filetranspiler
+  tags:
+    - "32"
 
 - name: HELPERNODE 32.1 | Building filetranspiler
   shell: "podman build /usr/local/src/filetranspiler -t filetranspiler:latest"
+  tags:
+    - "32"
 
 - name: HELPERNODE 32.2 | Installing filetranspiler
   copy:
     src: ../files/filetranspiler
     dest: /usr/local/bin/filetranspiler
     mode: '0555'
+  tags:
+    - "32"
 
 - name: HELPERNODE 33.0 | Get network device system name
   shell: "nmcli -t dev show {{ helper.networkifacename }} | grep GENERAL.CONNECTION | cut -d: -f2"
   register: devicesystemname
+  tags:
+    - "33"
 
 - name: HELPERNODE 33.1 | Setting network device system name as a fact
   set_fact:
     dsname: "{{ devicesystemname.stdout }}"
+  tags:
+    - "33"
 
 - name: HELPERNODE 34.0 | Setting DNS server ip on network interface "{{ dsname }}" to 127.0.0.1
   shell: 'nmcli con mod "{{ dsname }}" ipv4.dns 127.0.0.1'
+  tags:
+    - "34"
 
 - name: HELPERNODE 35.0 | Setting DNS search path on network interface "{{ dsname }}" to "{{ dns.clusterid }}.{{ dns.domain }}"
   shell: 'nmcli con mod "{{ dsname }}" ipv4.dns-search {{ dns.clusterid }}.{{ dns.domain }}'
+  tags:
+    - "35"
 
 - name: HELPERNODE 36.0 | Restarting NetworkManager
   service:
@@ -447,8 +570,12 @@
     state: restarted
   with_items:
     - NetworkManager
+  tags:
+    - "36"
 
 - name: HELPERNODE 37.0 | Information about this install
   debug:
     msg:
       - "Please run /usr/local/bin/helpernodecheck for information"
+  tags:
+    - "37"
