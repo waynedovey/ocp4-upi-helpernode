@@ -27,8 +27,8 @@ clock           IN      A       {{ helper.ipaddr }}
 ;
 ; Bation Node
 bastion           IN      A       {{ helper.ipaddr }}
-; Create entry for the bootstrap host
-{{ bootstrap.name }}	IN	A	{{ bootstrap.ipaddr }}
+; Create entry for the bootnode host
+{{ bootnode.name }}	IN	A	{{ bootnode.ipaddr }}
 ;
 ; Create entry for the registry host
 {{ registry.name }}	IN	A	{{ registry.ipaddr }}

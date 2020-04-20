@@ -324,10 +324,10 @@
     tags:
       - "20"
 
-  - name: HELPERNODE 20.2 | Set the bootstrap specific TFTP file
+  - name: HELPERNODE 20.2 | Set the bootnode specific TFTP file
     template:
       src: ../templates/pxe-bootstrap.j2
-      dest: "/var/lib/tftpboot/pxelinux.cfg/01-{{ bootstrap.macaddr | regex_replace (':', '-')}}"
+      dest: "/var/lib/tftpboot/pxelinux.cfg/01-{{ bootnode.macaddr | regex_replace (':', '-')}}"
       mode: 0555
     notify:
       - Restart tftp

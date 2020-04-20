@@ -12,7 +12,7 @@ $TTL 1W
 {{ m.ipaddr.split('.')[3] }}	IN	PTR	{{ m.name }}.{{ dns.clusterid }}.{{ dns.domain }}.
 {% endfor %}
 ;
-{{ bootstrap.ipaddr.split('.')[3] }}	IN	PTR	{{ bootstrap.name }}.{{ dns.clusterid }}.{{ dns.domain }}.
+{{ bootnode.ipaddr.split('.')[3] }}	IN	PTR	{{ bootnode.name }}.{{ dns.clusterid }}.{{ dns.domain }}.
 ;
 {{ helper.ipaddr.split('.')[3] }}	IN	PTR	api.{{ dns.clusterid }}.{{ dns.domain }}.
 {{ helper.ipaddr.split('.')[3] }}	IN	PTR	api-int.{{ dns.clusterid }}.{{ dns.domain }}.
