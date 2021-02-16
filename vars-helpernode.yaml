@@ -4,10 +4,10 @@ helper:
   name: "helper"
   ipaddr: "192.168.100.1"
   networkifdefault: "enp0s31f6"
-  networkifacename: "enp0s31f6""
+  networkifacename: "enp0s31f6"
   macaddr: "00:50:56:b5:16:6c"
 dns:
-  domain: "digitaldovey.com
+  domain: "digitaldovey.com"
   clusterid: "hetzner"
   forwarder1: "213.133.100.100"
   forwarder2: "213.133.98.98"
